@@ -29,16 +29,19 @@ class SparseRowIndexer:
             indptr.append(row_end - row_start)  # nnz of the row
 
         self.data = np.array(data, dtype=object)
-        self.indices = np.array(indices, dtype=object)
+        self._indices = np.array(indices, dtype=object)
         self.indptr = np.array(indptr, dtype=object)
         self.shape = csr_matrix.shape
 
     def __getitem__(self, row_selector):
-        indices = np.concatenate(self.indices[row_selector])
+        indices = np.concatenate(self._indices[row_selector])
         data = np.concatenate(self.data[row_selector])
         indptr = np.append(0, np.cumsum(self.indptr[row_selector]))
         shape = [indptr.shape[0] - 1, self.shape[1]]
         return ssp.csr_matrix((data, indices, indptr), shape=shape)
+
+    def indices(self, row_selector):
+        return np.concatenate(self._indices[row_selector])
 
 
 class SparseColIndexer:
@@ -53,17 +56,19 @@ class SparseColIndexer:
             indptr.append(col_end - col_start)
 
         self.data = np.array(data, dtype=object)
-        self.indices = np.array(indices, dtype=object)
+        self._indices = np.array(indices, dtype=object)
         self.indptr = np.array(indptr, dtype=object)
         self.shape = csc_matrix.shape
 
     def __getitem__(self, col_selector):
-        indices = np.concatenate(self.indices[col_selector])
+        indices = np.concatenate(self._indices[col_selector])
         data = np.concatenate(self.data[col_selector])
         indptr = np.append(0, np.cumsum(self.indptr[col_selector]))
-
         shape = [self.shape[0], indptr.shape[0] - 1]
         return ssp.csc_matrix((data, indices, indptr), shape=shape)
+
+    def indices(self, col_selector):
+        return np.concatenate(self._indices[col_selector])
 
 
 class MyDataset(InMemoryDataset):
@@ -299,7 +304,7 @@ def construct_pyg_graph(u, v, r, node_labels, max_node_label, y, node_features):
 
 def neighbors(fringe, A):
     # find all 1-hop neighbors of nodes in fringe from A
-    return set(A[list(fringe)].indices)
+    return set(A.indices(list(fringe)))
 
 
 def one_hot(idx, length):
