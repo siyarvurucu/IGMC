@@ -96,7 +96,7 @@ def train_multiple_epochs(train_dataset,
                 param_group['lr'] = lr_decay_factor * param_group['lr']
 
         if logger is not None:
-            logger(eval_info, model, optimizer)
+            logger(eval_info, model, optimizer, res_dir)
 
     if torch.cuda.is_available():
         torch.cuda.synchronize()
@@ -135,7 +135,7 @@ def test_once(test_dataset,
         'test_rmse': rmse,
         }
     if logger is not None:
-        logger(eval_info, None, None)
+        logger(eval_info, None, None, res_dir)
     return rmse
 
 
