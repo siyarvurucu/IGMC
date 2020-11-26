@@ -1,4 +1,5 @@
-from util_functions import neighbors, MyDynamicDataset
+from util_functions import neighbors, MyDynamicDataset, SparseRowIndexer, SparseColIndexer
+import scipy.sparse as ssp
 import os
 import torch
 import random
@@ -7,7 +8,7 @@ from models import *
 from train_eval import *
 
 
-def logger(info, model, optimizer, res_dir, save_interval = 3):
+def logger(info, model, optimizer, res_dir, save_interval = 1):
     epoch, train_loss, test_rmse = info['epoch'], info['train_loss'], info['test_rmse']
     if not os.path.isdir(res_dir):
         os.mkdir(res_dir)
@@ -147,8 +148,8 @@ def load_data(file_dir = "drive/My Drive/music recommendation/",
               sample_ratio = 1,
               max_nodes = 10000,
               save_appx = ""):
-    adj_train = sp.load_npz(file_dir + "spotify_mpd.npz")
-    adj_train = sp.csr_matrix.astype(adj_train, np.int8)
+    adj_train = ssp.load_npz(file_dir + "spotify_mpd.npz")
+    adj_train = ssp.csr_matrix.astype(adj_train, np.int8)
     adj_train_csc = adj_train.tocsc()
 
     adj_train = adj_train.tocoo()
