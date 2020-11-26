@@ -194,13 +194,9 @@ def load_data(file_dir = "drive/My Drive/music recommendation/",
     dataset_class = 'MyDynamicDataset' if True else 'MyDataset'
     data_combo = (data_name, appx, save_appx)
 
-    Aridxer = SparseRowIndexer(adj_train)
-    Acidxer = SparseColIndexer(adj_train_csc)
-
     train_graphs = eval(dataset_class)(
         'data/{}{}/{}/train'.format(*data_combo),
-        Aridxer,
-        Acidxer,
+        adj_train,
         train_indices,
         train_labels,
         1,  # args.hop
@@ -215,8 +211,7 @@ def load_data(file_dir = "drive/My Drive/music recommendation/",
 
     val_graphs = eval(dataset_class)(
         'data/{}{}/{}/val'.format(*data_combo),
-        Aridxer,
-        Acidxer,
+        adj_train,
         val_indices,
         val_labels,
         1,  # args.hop
