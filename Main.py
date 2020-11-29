@@ -240,6 +240,7 @@ elif args.data_name == 'ml_100k':
     ) = load_official_trainvaltest_split(
         args.data_name, args.testing, rating_map, post_rating_map, args.ratio
     )
+
 else:
     (
         u_features, v_features, adj_train, train_labels, train_u_indices, train_v_indices,

@@ -30,7 +30,7 @@ def logger(info, model, optimizer, res_dir, save_interval = 1):
 def neighbor_songs(pl, A, Acsc, sample_ratio=1,
                    max_nodes_per_hop=None):
 
-    songs = set(Acsc[[pl]].indices)
+    songs = set(Acsc.indices([pl]))
     u_nodes, v_nodes = list(songs), [pl]
     # u_dist, v_dist = [0], [0]
     u_visited, v_visited = songs, set(v_nodes)
@@ -38,7 +38,7 @@ def neighbor_songs(pl, A, Acsc, sample_ratio=1,
     # for dist in range(1, h+1):
 
     # u_fringe = neighbors(v_fringe, Acsc, False)
-    v_fringe = neighbors(u_fringe, A, True)
+    v_fringe = neighbors(u_fringe, A)
 
     # u_fringe = u_fringe - u_visited
     v_fringe = v_fringe - v_visited
@@ -57,7 +57,7 @@ def neighbor_songs(pl, A, Acsc, sample_ratio=1,
     # u_nodes = u_nodes + list(u_fringe)
     v_nodes = v_nodes + list(v_fringe)
 
-    u_fringe = neighbors(v_fringe, Acsc, False)
+    u_fringe = neighbors(v_fringe, Acsc)
     u_fringe = u_fringe - u_visited
     if sample_ratio < 1.0:
         u_fringe = random.sample(u_fringe, int(sample_ratio * len(u_fringe)))
